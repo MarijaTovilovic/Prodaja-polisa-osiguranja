@@ -82,6 +82,22 @@ Osiguranik (u aplikaciji nema nikakvu funkciju,osim u slučaju ako je ujedno i o
 
 ## Model baze podataka
 
+Entitet Podaci_o_vozilu:                         Tabela vehicle_data:
+-vrsta_vozila                                   -vehicle_data_id        INT UN  PK,AI
+-marka_vozila                                   -type_of_vehicle	
+-registarski_broj                               -vehicle_brand
+-najveca_dozvoljena_masa                        -max_mass
+-tezina_praznog_vozila                          -mass
+-snaga_motora                                   -engine_power
+-zapremina_motora                               -engine_dispacement
+-boja_vozila                                    -vehicle_color
+-broj_sasije                                    -vin    VC    17 UQ                                            
+-datum_pocetka                                  -duration_of_insurance
+-datum_isteka                                   -reason_for_filling
+-razlog_popunjavanja                            -sum_insured
+-suma_osiguranja                                -general_terms_and_conditionals
+-opsti_uslovi                                                                                                     
+
 ...
 
 ## Uloge korisnika

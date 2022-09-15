@@ -82,22 +82,70 @@ Osiguranik (u aplikaciji nema nikakvu funkciju,osim u slučaju ako je ujedno i o
 
 ## Model baze podataka
 
-Entitet Podaci_o_vozilu:                         Tabela vehicle_data:
--vrsta_vozila                                   -vehicle_data_id        INT UN  PK,AI
--marka_vozila                                   -type_of_vehicle	
--registarski_broj                               -vehicle_brand
--najveca_dozvoljena_masa                        -max_mass
--tezina_praznog_vozila                          -mass
--snaga_motora                                   -engine_power
--zapremina_motora                               -engine_dispacement
--boja_vozila                                    -vehicle_color
--broj_sasije                                    -vin    VC    17 UQ                                            
--datum_pocetka                                  -duration_of_insurance
--datum_isteka                                   -reason_for_filling
--razlog_popunjavanja                            -sum_insured
--suma_osiguranja                                -general_terms_and_conditionals
--opsti_uslovi                                                                                                     
+Zaposleni:                    staff
+-korisnicko ime                  staff_id        INT           UN         PK   AI
+-lozinka                         username        VARCHAR       64         UQ 
+				                 password_hash   VARCHAR       128
+                                 created_at      TS                       CT
+                                 is_active       TI            1          UN,D 1
 
+ Za tabelu staff imamo primarni kljuc,njegovo korisnicko ime I lozinku,za lozinku uvek cuvamo password_hash,zatim cuvamo kada je nalog napravljen kao I informaciju da li je aktivan(po default-u jeste),jer ukoliko zaposleni dobije otkaz ili iz bilo kog drugog razloga prestane da radi da mozemo da deaktiviramo nalog.                                
+
+Osiguranik:                  insured
+-jmbg                             insured_id        INT           UN   PK AI                                   
+-ime                              jmbg              VARCHAR       13
+-prezime                          name              VARCHAR       128
+-opstina                          surname           VARCHAR       128
+-broj poste                       township          VARCHAR       64
+-mesto                            post_number       VARCHAR       5
+-ulica                            place             VARCHAR       255
+-broj                             street_and_number VARCHAR       255
+-broj_telefona                    phone_number      VARCHAR       24       NULL
+-email                            email             VARCHAR       255  UQ  NULL
+
+Za tabelu insured imamo primarni kljuc,i osnovne podatke koji su potrebni za izdavanje polise kao sto su jmbg(duzine 13 karaktera),ime,prezime,opstinu,broj poste,mesto,ulicu i broj,broj telefona i email,Broj telefona i email nisu obavezna polja,ona se popunjavaju u slucaju da osiguranik zeli da mu se salju obavestenja u vezi osiguranja(istek polise,popusti itd).
+
+Polisa_osiguranja:          insurance_policy
+-vrsta osiguranja                 insurance_policy_id      INT     UN      PK  AI
+                                  type_of_insurance_id     INT     UN      FK
+                                  insured_id               INT     UN      FK
+
+Za tabelu insurance_policy imamo primarni kljuc,kao i strane kljuceve vrsta_osiguranja i osiguranik.Osiguranik moze imati vise polisa,na primer moze imati polisuAO(u kojoj moze biti vlasnik vise automobila,samim tim moze imati vise AO polisa),a moze imati i ostale cetiri polise koje su navedene u projektnom zadatku.
+
+Vrsta osiguranja            type_of_insurance
+-naziv                             type_of_insurance_id    INT       UN      PK  AI
+                                   name                    VARCHAR   128     UQ
+
+Za tabelu type_of insurance imamo primarni kljuc i naziv osiguranja.
+
+PolisaAO                    policyAO
+-podaci_o_osiguraniku		     policyAO_id         INT      UN     PK   AI
+-podaci_o_vozilu                 date_of_issue       TIMESTAMP
+-datum_izdavanja                 insured_id          INT      UN     FK
+						         vehicle_data_id     INT      UN     FK
+                                 
+
+Za tabelu policyAO imamo primarni kljuc,podatke o vozilu i osiguraniku kao strane kljuceve i datum izdavanja polise(koji ne moze biti veci od 30 dana od datuma prethodne polise,ukoliko je rec o produzenje polise).
+
+ Podaci_o_vozilu:            vehicle_data:
+-vrsta_vozila                    vehicle_data_id        INT        UN  PK  AI
+-marka_vozila                    type_of_vehicle	    VARCHAR 
+-registarski_broj                vehicle_brand          VARCHAR  
+-najveca_dozvoljena_masa         registration_number    VARCHAR    24  UQ1             
+-tezina_praznog_vozila           max_mass               VARCHAR    16
+-snaga_motora                    mass                   VARCHAR    16
+-zapremina_motora                engine_dispacement     SMALLINT
+-boja_vozila                     engine_power           SMALLINT
+-datum_pocetka                   vehicle_color          VARCHAR    64
+-broj_sasije                     vin                    VARCHAR    17  UQ1
+-datum_pocetka                   duration_of_insurance  DATE
+-datum isteka                    reason_for_filling     VARCHAR            
+-razlog_popunjavanja             sum_insured            DECIMAL    10,2       
+-suma_osiguranja                 general_terms_and_conditional    MEMO           
+-opsti uslovi                          
+                              
+                                                                                                     
+Za tabelu vehicle_data imamo primarni kljuc,marku vozila,registarski broj(ne mozemo imati dva vozila sa istim registarskim brojem),ukupnu masu vozila,masu vozila,snagu i zapreminu motora,broj sasije koji je 17 karaktera(ne mozemo imati dva vozila sa istim brojem sasije),boju,trajanje registracije,razlog popunjavanja(da li je u pitanju prva registracija ili produzenje registracije),suma osiguranja i opsti uslovi.
 ...
 
 ## Uloge korisnika

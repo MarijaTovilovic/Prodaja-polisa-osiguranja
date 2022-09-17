@@ -91,21 +91,48 @@ Zaposleni:                    staff
 
  Za tabelu staff imamo primarni kljuc,njegovo korisnicko ime I lozinku,za lozinku uvek cuvamo password_hash,zatim cuvamo kada je nalog napravljen kao I informaciju da li je aktivan(po default-u jeste),jer ukoliko zaposleni dobije otkaz ili iz bilo kog drugog razloga prestane da radi da mozemo da deaktiviramo nalog.                                
 
+Adresa osiguranika             adress_insured
+-mesto                           adress_insured_id    INT           UN    PK   AI
+-opstina                         place                VARCHAR       255
+-broj poste                      township             VARCHAR       64
+-ulica                           post_number          VARCHAR       5
+-broj                            street_and_number    VARCHAR       255
+
+Za tabelu adress_insured imamo primarni kljuc i podatke kao sto su mesto,opstina,broj poste,ulica i broj.
+
+
 Osiguranik:                  insured
--jmbg                             insured_id        INT           UN   PK AI                                   
--ime                              jmbg              VARCHAR       13
--prezime                          name              VARCHAR       128
--opstina                          surname           VARCHAR       128
--broj poste                       township          VARCHAR       64
--mesto                            post_number       VARCHAR       5
--ulica                            place             VARCHAR       255
--broj                             street_and_number VARCHAR       255
--broj_telefona                    phone_number      VARCHAR       24       NULL
--email                            email             VARCHAR       255  UQ  NULL
--broj_pasosa                      passport_number   VARCHAR       10   UQ  NULL
+-jmbg                           insured_id          INT           UN   PK AI                                   
+-ime                            jmbg                VARCHAR       13
+-prezime                        name                VARCHAR       128
+-opstina                        surname             VARCHAR       128
+-broj_telefona                  phone_number        VARCHAR       24       NULL
+-email                          email               VARCHAR       255  UQ  NULL
+-broj_pasosa                    passport_number     VARCHAR       10   UQ  NULL
+-adresa                         adress_insured_id   INT           UN   FK
 
-Za tabelu insured imamo primarni kljuc,i osnovne podatke koji su potrebni za izdavanje polise kao sto su jmbg(duzine 13 karaktera),ime,prezime,opstinu,broj poste,mesto,ulicu i broj,broj telefona i email,Broj telefona i email nisu obavezna polja,ona se popunjavaju u slucaju da osiguranik zeli da mu se salju obavestenja u vezi osiguranja(istek polise,popusti itd).
+Za tabelu insured imamo primarni kljuc,i osnovne podatke koji su potrebni za izdavanje polise kao sto su jmbg(duzine 13 karaktera),ime,prezime,adresu kao strani kljuc,broj telefona i email,Broj telefona i email nisu obavezna polja,ona se popunjavaju u slucaju da osiguranik zeli da mu se salju obavestenja u vezi osiguranja(istek polise,popusti itd).
 
+Spisak_osiguranika               list_of_insured
+-osiguranik                          list_of_insured   INT      UN   PK  AI
+                                     insured_id        INT      UN   FK
+
+Za tabelu list_of_insured imamo primarni kljuc i listu svih postojecih osiguranika u bazi.
+
+Kreiranje_novog osiguranika        creation_new_insured
+-podaci o osiguraniku                  creation_new_insured_id  INT   UN  PK  AI
+                                       insured_id               INT   UN  FK
+                                       list_of_insured_id       INT   UN  FK
+
+Za tabelu creation_new_insured imamo primarni kljuc,zaposleni unosi potrebne podatke o osiguraniku i smesta ga u listu osiguranika.
+
+Izmena_osiguranika                  change_insured
+-izmena_podataka_osiguranika           change_insured_id        INT   UN  PK   AI
+                                       insured_id               INT   UN  FK
+                                       list_of_insured_id       INT   UN  FK
+
+Za tabelu change_insured imamo primarni kljuc,zaposleni moze da izmeni postojece podatke o osiguraniku,da ih sacuva i vrati u listu osiguranika.
+                                       
 Polisa_osiguranja:          insurance_policy
 -vrsta osiguranja                 insurance_policy_id      INT     UN      PK  AI
                                   type_of_insurance_id     INT     UN      FK

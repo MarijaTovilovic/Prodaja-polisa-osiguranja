@@ -97,13 +97,13 @@ Adresa osiguranika             adress_insured
 -broj poste                      township             VARCHAR       64
 -ulica                           post_number          VARCHAR       5
 -broj                            street_and_number    VARCHAR       255
-
-Za tabelu adress_insured imamo primarni kljuc i podatke kao sto su mesto,opstina,broj poste,ulica i broj.
+                                 insured_id           INT           UN    FK
+Za tabelu adress_insured imamo primarni kljuc i podatke kao sto su mesto,opstina,broj poste,ulica i broj,kao I kom osiguraniku ta adresa pripada.
 
 
 Osiguranik:                  insured
 -jmbg                           insured_id          INT           UN   PK AI                                   
--ime                            jmbg                VARCHAR       13
+-ime                            jmbg                VARCHAR       13   UQ
 -prezime                        name                VARCHAR       128
 -opstina                        surname             VARCHAR       128
 -broj_telefona                  phone_number        VARCHAR       24       NULL
@@ -132,7 +132,7 @@ Izmena_osiguranika                  change_insured
                                        list_of_insured_id       INT   UN  FK
 
 Za tabelu change_insured imamo primarni kljuc,zaposleni moze da izmeni postojece podatke o osiguraniku,da ih sacuva i vrati u listu osiguranika.
-                                       
+
 Polisa_osiguranja:          insurance_policy
 -vrsta osiguranja                 insurance_policy_id      INT     UN      PK  AI
                                   type_of_insurance_id     INT     UN      FK
@@ -140,7 +140,7 @@ Polisa_osiguranja:          insurance_policy
 
 Za tabelu insurance_policy imamo primarni kljuc,kao i strane kljuceve vrsta_osiguranja i osiguranik.Osiguranik moze imati vise polisa,na primer moze imati polisuAO(u kojoj moze biti vlasnik vise automobila,samim tim moze imati vise AO polisa),a moze imati i ostale cetiri polise koje su navedene u projektnom zadatku.
 
-Vrsta osiguranja            type_of_insurance
+Vrsta osiguranja           type_of_ insurance
 -naziv                             type_of_insurance_id    INT       UN      PK  AI
                                    name                    VARCHAR   128     UQ
 
@@ -155,35 +155,35 @@ PolisaAO                    policyAO
 
 Za tabelu policyAO imamo primarni kljuc,podatke o vozilu i osiguraniku kao strane kljuceve i datum izdavanja polise(koji ne moze biti veci od 30 dana od datuma prethodne polise,ukoliko je rec o produzenje polise).
 
- Podaci_o_vozilu:            vehicle_data:
+ Podaci_o_vozilu:            vehicle_data
 -vrsta_vozila                    vehicle_data_id        INT        UN  PK  AI
--marka_vozila                    type_of_vehicle	    VARCHAR 
--registarski_broj                vehicle_brand          VARCHAR  
--najveca_dozvoljena_masa         registration_number    VARCHAR    24  UQ1             
+-marka_vozila                    type_of_vehicle	    VARCHAR    64
+-registarski_broj                vehicle_brand          VARCHAR    128
+-najveca_dozvoljena_masa         registration_number    VARCHAR    24  UQ             
 -tezina_praznog_vozila           max_mass               VARCHAR    16
 -snaga_motora                    mass                   VARCHAR    16
--zapremina_motora                engine_dispacement     SMALLINT
--boja_vozila                     engine_power           SMALLINT
+-zapremina_motora                engine_dispacement     SMALLINT   8
+-boja_vozila                     engine_power           SMALLINT   8
 -datum_pocetka                   vehicle_color          VARCHAR    64
--broj_sasije                     vin                    VARCHAR    17  UQ1
+-broj_sasije                     vin                    VARCHAR    17  UQ
 -datum_pocetka                   duration_of_insurance  DATE
--datum isteka                    reason_for_filling     VARCHAR            
+-datum isteka                    reason_for_filling   ENUM (prva reg.,produzenje,promena vlasnika)     
 -razlog_popunjavanja             sum_insured            DECIMAL    10,2       
--suma_osiguranja                 general_terms_and_conditional    MEMO           
+-suma_osiguranja                 general_terms_and_conditional    MEDIUMTEXT           
 -opsti uslovi                          
                               
                                                                                                      
-Za tabelu vehicle_data imamo primarni kljuc,marku vozila,registarski broj(ne mozemo imati dva vozila sa istim registarskim brojem),ukupnu masu vozila,masu vozila,snagu i zapreminu motora,broj sasije koji je 17 karaktera(ne mozemo imati dva vozila sa istim brojem sasije),boju,trajanje registracije,razlog popunjavanja(da li je u pitanju prva registracija ili produzenje registracije),suma osiguranja i opsti uslovi.
+Za tabelu vehicle_data imamo primarni kljuc,marku vozila,registarski broj(ne mozemo imati dva vozila sa istim registarskim brojem),ukupnu masu vozila,masu vozila,snagu i zapreminu motora,broj sasije koji je 17 karaktera(ne mozemo imati dva vozila sa istim brojem sasije),boju,trajanje registracije,razlog popunjavanja(da li je u pitanju prva registracija,produzenje registracije ili promena vlasnika),suma osiguranja i opsti uslovi.
 
 
 Putno_osiguranje              travel_insurance      
 -destinacija                           travel_insurance_id          INT        UN   PK  AI
 -datum_pocetka                         duration_of_insurance        DATE
--datum_isteka                          age_group                    SMALLINT
+-datum_isteka                          age_group                    SMALLINT   8
 -starosna_grupa                        type_of_travel               VARCHAR    64
 -vrsta_putovanja                       purpose_of_the_trip          VARCHAR    128   
 -svrha_putovanja                       sum_insured                  DECIMAL    10,2 
--suma_osiguranja                       general_terms_and_conditional  MEMO         
+-suma_osiguranja                       general_terms_and_conditional  MEDIUMTEXT         
 -opsti_uslovi                          insured_id                   INT        UN   FK
                                        destinations                 VARCHAR    24   
 
@@ -194,10 +194,10 @@ Osiguranje nepokretne imovine od pozara     property_insurance
 -povrsina                                        adress                    VARCHAR  255  UQ
 -datum izgradnje                                 surface                   VARCHAR  64
 -procena_rizika                                  date_of_construction      DATE
--datum_pocetka                                   risk_assessment
+-datum_pocetka                                   risk_assessment           VARCHAR  255
 -datum_isteka                                    duration_of_insurance     DATE
 -suma_osiguranja                                 sum_insured               DECIMAL  10,2 
--opsti_uslovi                                    general_terms_and_conditional  MEMO
+-opsti_uslovi                                    general_terms_and_conditional  MEDIUMTEXT 
                                                  insured_id                INT      UN   FK
 
 Za tabelu property_insurance imamo primarni kljuc,adresu,povrsinu imovine,datum trajanja polise,datum izgradnje,procenu rizoka,sumu osiguranja i opste uslove,kao i podatke o osiguraniku.
@@ -207,7 +207,7 @@ Osiguranje od posledice nesrecnog slucaja       accident_insurance
 -datum_isteka                                      duration_of_insurance     DATE
 -vrsta_pokrica                                     type_of_coverage          VARCHAR  64
 -suma_osiguranja                                   sum_insured               DECIMAL 10,2
--opsti_uslovi                                      general_terms_and_conditional  MEMO
+-opsti_uslovi                                      general_terms_and_conditional  MEDIUMTEXT 
                                                    insured_id                INT      UN   FK
 
 
@@ -220,7 +220,7 @@ Osiguranje useva i plodova                      crop_insurance
 -suma_osiguranja                                   sum_insured                 DECIMAL  10,2
 -izvori_finansiranja                               source_of_finance           VARCHAR  64
 -vrsta_useva                                       type_of_crop                VARCHAR  255
--opsti_uslovi                                      general_terms_and_conditional MEMO
+-opsti_uslovi                                      general_terms_and_conditional MEDIUMTEXT 
                                                    insured_id                   INT     UN   FK
 
 Za tabelu crop_insurance imamo primarni kljuc,trajanje polise,vrstu rizika,izvore finansiranja,vrstu useva,sumu osiguranja i opste uslove,kao i podatke o osiguraniku.
